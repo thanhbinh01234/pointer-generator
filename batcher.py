@@ -238,7 +238,7 @@ class Batcher(object):
     self._example_queue = Queue.Queue(self.BATCH_QUEUE_MAX * self._hps.batch_size)
 
     # Different settings depending on whether we're in single_pass mode or not
-    if single_pass:
+    if single_pass or once:
       self._num_example_q_threads = 1 # just one thread, so we read through the dataset just once
       self._num_batch_q_threads = 1  # just one thread to batch examples
       self._bucketing_cache_size = 1 # only load one batch's worth of examples before bucketing; this essentially means no bucketing
@@ -278,6 +278,7 @@ class Batcher(object):
     # If the batch queue is empty, print a warning
     if self._batch_queue.qsize() == 0:
       tf.logging.warning('Bucket input queue is empty when calling next_batch. Bucket queue size: %i, Input queue size: %i', self._batch_queue.qsize(), self._example_queue.qsize())
+      self._finished_reading = True
       if self._single_pass and self._finished_reading:
         tf.logging.info("Finished reading dataset in single_pass mode.")
         return None
