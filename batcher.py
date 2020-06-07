@@ -219,7 +219,7 @@ class Batcher(object):
 
   BATCH_QUEUE_MAX = 100 # max number of batches the batch_queue can hold
 
-  def __init__(self, data_path, vocab, hps, single_pass):
+  def __init__(self, data_path, vocab, hps, single_pass, once):
     """Initialize the batcher. Start threads that process the data into batches.
 
     Args:
@@ -231,7 +231,7 @@ class Batcher(object):
     self._data_path = data_path
     self._vocab = vocab
     self._hps = hps
-    self._single_pass = single_pass
+    self._single_pass = single_pass or once
 
     # Initialize a queue of Batches waiting to be used, and a queue of Examples waiting to be batched
     self._batch_queue = Queue.Queue(self.BATCH_QUEUE_MAX)
